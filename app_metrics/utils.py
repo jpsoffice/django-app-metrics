@@ -2,7 +2,7 @@ from contextlib import contextmanager
 import datetime
 import time
 from django.conf import settings
-from django.utils.importlib import import_module
+from django.utils.module_loading import import_string
 
 from app_metrics.exceptions import InvalidMetricsBackend, TimerError
 from app_metrics.models import Metric, MetricSet
@@ -98,8 +98,8 @@ def import_backend():
 
     # Attempt to import the backend
     try:
-        backend = import_module(backend_string)
-    except Exception, e:
+        backend = import_string(backend_string)
+    except Exception as e:
         raise InvalidMetricsBackend("Could not load '%s' as a backend: %s" %
                                     (backend_string, e))
 
@@ -212,7 +212,7 @@ def month_for_date(month):
     return month - datetime.timedelta(days=month.day-1)
 
 def year_for_date(year):
-    return datetime.date(year.year, 01, 01)
+    return datetime.date(year.year, 1, 1)
 
 def get_previous_month(date):
     if date.month == 1:
